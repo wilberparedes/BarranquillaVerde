@@ -20,6 +20,7 @@ const Login = ({navigation, dispatch, Login: ALogin}) => {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('');
+  const [id_device, setId_device] = useState("151651651651651")
 
 
   const sendLogin = () => {
@@ -49,7 +50,7 @@ const Login = ({navigation, dispatch, Login: ALogin}) => {
     else{
       console.log('success');
       setLoading(true)
-      const rALogin = ALogin(email, pass, "12355651")
+      const rALogin = ALogin(email, pass, id_device)
         .then((data) => data.json())
         .then((dataJson) => {
           if(dataJson.success){
