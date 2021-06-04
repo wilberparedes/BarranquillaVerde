@@ -7,8 +7,6 @@ import { CommonActions } from '@react-navigation/native';
 import { connect } from 'react-redux';
 
 class Functions  {
-
-
     
     alertOK(title, message, cancel) {
         Alert.alert(
@@ -242,6 +240,10 @@ class Functions  {
         });
         return Icons[e];
     }
+
+    
+
+    
 
 }
 

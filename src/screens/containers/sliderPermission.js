@@ -277,7 +277,7 @@ class SliderPermission extends Component{
                             {(this.state.permission) && ( <Text style={styles.title}>Te damos la bienvenida a </Text>)}
                             {(this.state.permission) && (<Image 
                                     source={require('../../../assets/logo-white.png')} 
-                                    style={{marginTop: -10,width: 150, height: 50, resizeMode: 'contain',}}
+                                    style={{marginVertical: 5,width: 150, height: 50, resizeMode: 'contain',}}
                                     />
                                     )}
                                 

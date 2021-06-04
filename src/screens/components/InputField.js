@@ -34,7 +34,7 @@ export default function InputField(props) {
         )}
         <View
           style={[
-            { flex: 1, height: 50 },
+            { flex: 1, height: (props.numberOfLines ? 110 : 50) },
             props.shadow
               ? {
                   shadowOffset: { width: 0, height: 3 },
@@ -68,6 +68,7 @@ export default function InputField(props) {
             autoCapitalize="none"
             theme={theme}
             secureTextEntry={props.password ? !visible : false}
+            style={{height: (props.numberOfLines ? undefined : undefined)}}
           />
         </View>
         {props.password && props.showPassword && (

@@ -1,21 +1,24 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { Metrics, Colors } from '../../themes';
+import { Text, View, StyleSheet, Image, ActivityIndicator, SafeAreaView } from 'react-native';
+import { Colors } from '../../themes';
 
-function Loading(props){
+function Loading(){
     return(
-        <View style={styles.container}>
-            <Image 
-                source={require('../../../assets/logo-white.png')} 
-                style={styles.logo}
-                />
-            <ActivityIndicator size="large" color={'white'} />
-            <Text style={{color: 'white'}}>Cargando...</Text>
-        </View>
+        <SafeAreaView style={[styles.safContainer, { backgroundColor: Colors.primary }]}>
+            <View style={styles.container}>
+                <Image 
+                    source={require('../../../assets/logo-white.png')} 
+                    style={styles.logo}
+                    />
+                <ActivityIndicator size="large" color={'white'} />
+                <Text style={{color: 'white'}}>Cargando...</Text>
+            </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+    safContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     container: {
         flex: 1,
         backgroundColor: Colors.primary,
@@ -28,7 +31,6 @@ const styles = StyleSheet.create({
         width: 300, 
         height: 110,
         marginBottom: 16
-        // marginTop: Metrics.screenHeight/45.0
     },
 })
 

@@ -1,11 +1,14 @@
 import URL from '../../../url_backend';
 const BASE_API = `${URL}Lopersa/`;
 
-export const uploadFile = (token, name, img) => async dispatch => {
+export const sendReport = (token, name, img, iduser, idparque, zonanovedad, comentario) => async dispatch => {
     const formData  = new FormData();
     formData.append('img-perfil', img);
-    formData.append('aaa', "1234");
-    const query = await fetch(`${BASE_API}uploadFotoPerfil?nombphoto=${name}`, {
+    formData.append('iduser', iduser);
+    formData.append('idparque', idparque);
+    formData.append('zonanovedad', zonanovedad);
+    formData.append('comentario', comentario);
+    const query = await fetch(`${BASE_API}saveReport?nombphoto=${name}`, {
         method: 'POST',
         // headers: {
         //     'Content-Type': 'application/x-www-form-urlencoded',
@@ -41,6 +44,14 @@ export const login = (email, pass, id_device) => async dispatch => {
     const query = await fetch(`${BASE_API}Login`, {
         method: 'POST',
         body: formData
+    })
+    return query;
+}
+
+
+export const loadParques = (token) => async dispatch => {
+    const query = await fetch(`${BASE_API}LoadParques`, {
+        method: 'POST',
     })
     return query;
 }

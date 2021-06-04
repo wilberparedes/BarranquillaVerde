@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "143098592663",
+    "project_id": "barranquilla-verde-8e1df",
+    "storage_bucket": "barranquilla-verde-8e1df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143098592663:android:6d54042e39c11dbc4858d2",
+        "android_client_info": {
+          "package_name": "com.barranquillaverde"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "143098592663-df4e719v3ctd1p1nsj9op604qq7etb6u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWq3MhAWiMFsbkYu8VY99mi9s2PBs0eq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "143098592663-df4e719v3ctd1p1nsj9op604qq7etb6u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

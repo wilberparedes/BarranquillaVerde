@@ -76,7 +76,7 @@ const AppStack = ({user, tokenData, allUser}) => {
   }, [isReady, getToken, user, tokenData]);
 
   if (!isReady) {
-    return <SplashComponents />;
+    return null;
   }
 
   return(
@@ -88,6 +88,7 @@ const AppStack = ({user, tokenData, allUser}) => {
         }>
         <Stack.Navigator headerMode="none" initialRouteName="SplashScreen"> 
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="Loading" component={Loading} />
 
           {tokenData ? (
             <Stack.Screen 
@@ -98,7 +99,6 @@ const AppStack = ({user, tokenData, allUser}) => {
             <>
               <Stack.Screen name="HomeAccess" component={HomeAccess} />
               <Stack.Screen name="SliderPermission" component={SliderPermission} />
-              <Stack.Screen name="Loading" component={Loading} />
               <Stack.Screen name="Login" component={Login} />
               <Stack.Screen name="Register" component={Register} />
             </>

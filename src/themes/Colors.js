@@ -8,7 +8,9 @@ export default colors = {
   gris: '#808080',
   grisHr: '#DDDDE5',
   ButtonPrimary: '#41B65B',
+  LightGrey: '#979797',
 
   TextBlack: '#39393A',
   SemiLightGrey: '#D8D8D8',
 }
+

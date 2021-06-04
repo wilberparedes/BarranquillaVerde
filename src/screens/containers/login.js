@@ -10,17 +10,16 @@ import ButtonOfferApp from '../components/ButtonOfferApp';
 import InputField from '../components/InputField';
 import HeaderOnlyBack from '../components/HeaderOnlyBack';
 
-const Login = ({navigation, dispatch, Login: ALogin}) => {
+const Login = ({navigation, dispatch, Login: ALogin, datauuid}) => {
 
   const inputs = {};
   const focusTheField = (id) => inputs[id].focus();
   const { alertOK } = Functions;
 
-
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('');
-  const [id_device, setId_device] = useState("151651651651651")
+  const [id_device, setId_device] = useState(datauuid)
 
 
   const sendLogin = () => {
@@ -48,14 +47,11 @@ const Login = ({navigation, dispatch, Login: ALogin}) => {
       );
     }
     else{
-      console.log('success');
       setLoading(true)
       const rALogin = ALogin(email, pass, id_device)
         .then((data) => data.json())
         .then((dataJson) => {
           if(dataJson.success){
-            console.log("-------------------- successss ----------------------")
-            console.log(dataJson)
             const { accessToken, id, nameuser, cellphone, name_complete } = dataJson;
             dispatch({
               type: 'SET_TOKEN',
@@ -92,7 +88,6 @@ const Login = ({navigation, dispatch, Login: ALogin}) => {
               true
             );
           }
-          console.log(dataJson);
           setLoading(false)
         });
       
@@ -172,10 +167,18 @@ const Login = ({navigation, dispatch, Login: ALogin}) => {
   );
 };
 
+
+
+const mapStateToProps = (state) =>{
+  return{
+    datauuid: state.user.uuid,
+  }
+}
+
 const mapDispatchToProps = dispatch => ({
   Login: (email, pass, id_device) => 
     dispatch(actions.api.login(email, pass, id_device)),
   dispatch
 });
 
-export default connect( null, mapDispatchToProps )(Login);
+export default connect( mapStateToProps, mapDispatchToProps )(Login);

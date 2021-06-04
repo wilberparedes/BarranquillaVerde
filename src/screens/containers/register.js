@@ -1,9 +1,7 @@
 import React, { useEffect, useState  } from 'react';
-// import useAlert from '../../hooks/useAlert';
 import { connect } from 'react-redux';
 import { CommonActions } from '@react-navigation/native';
 import { actions } from '../../store';
-
 
 import { Text, View, StatusBar, Image, ImageBackground, Linking, Alert,  } from 'react-native';
 import { Colors, Fonts, StylesGeneral, Functions, Metrics  } from '../../themes';
@@ -11,14 +9,9 @@ import ButtonOfferApp from '../components/ButtonOfferApp';
 import InputField from '../components/InputField';
 import HeaderOnlyBack from '../components/HeaderOnlyBack';
 
-// import { gql, useQuery, useMutation } from '@apollo/client';
 
-// import { GQL_LOGIN, queryyy } from '../../store/actions/graphqlApi';
+const Register = ({navigation, dispatch, RegisterAccount, datauuid}) => {
 
-
-const Register = ({navigation, dispatch, RegisterAccount}) => {
-
-//   const alert = useAlert();
   const inputs = {};
   const focusTheField = (id) => inputs[id].focus();
   const { alertOK } = Functions;
@@ -29,7 +22,7 @@ const Register = ({navigation, dispatch, RegisterAccount}) => {
   const [email, setEmail] = useState('')
   const [nameuser, setNameuser] = useState('')
   const [pass, setPass] = useState('')
-  const [id_device, setId_device] = useState("2135165651651")
+  const [id_device, setId_device] = useState(datauuid)
 
 
   const sendRegister = () => {
@@ -96,8 +89,6 @@ const Register = ({navigation, dispatch, RegisterAccount}) => {
         .then((data) => data.json())
         .then((dataJson) => {
           if(dataJson.success){
-            console.log("-------------------- successss ----------------------")
-            console.log(dataJson)
             dispatch({
               type: 'SET_TOKEN',
               payload: {
@@ -133,7 +124,6 @@ const Register = ({navigation, dispatch, RegisterAccount}) => {
               true
             );
           }
-          console.log(dataJson);
           setLoading(false)
         });
       
@@ -245,10 +235,17 @@ const Register = ({navigation, dispatch, RegisterAccount}) => {
 };
 
 
+const mapStateToProps = (state) =>{
+  return{
+    datauuid: state.user.uuid,
+  }
+}
+
+
 const mapDispatchToProps = dispatch => ({
   RegisterAccount: (name, cellphone, email, nameuser, pass, id_device) => 
     dispatch(actions.api.registerAccount(name, cellphone, email, nameuser, pass, id_device)),
   dispatch
 });
 
-export default connect( null, mapDispatchToProps )(Register);
+export default connect( mapStateToProps, mapDispatchToProps )(Register);

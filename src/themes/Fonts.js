@@ -17,13 +17,14 @@ export default Fonts = StyleSheet.create({
     fontFamily: family.regular
   },
   fontMedium:{
-    fontFamily: family.medium
+    fontFamily: family.medium,
+    lineHeight: 18
   },
   fontSemiBold:{
     fontFamily: family.semibold
   },
   fontBold:{
-    fontFamily: family.bold
+    fontFamily: family.bold,
   },
   fontExtraBold:{
     fontFamily: family.extrabold

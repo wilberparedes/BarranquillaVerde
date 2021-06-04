@@ -1,69 +1,63 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import {
     Alert,
     PermissionsAndroid,
     BackHandler,
-    StyleSheet,
-    View,
-    Text,
-    SafeAreaView,
-    StatusBar,
-    ImageBackground,
 } from 'react-native';
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+import Geolocation from 'react-native-geolocation-service';
+// NOTIFICATION PUSH
+import messaging from '@react-native-firebase/messaging';
 
-import LoadingComponent from '../../sections/components/loading'
 
-import { Colors, Metrics, StylesGeneral, Fonts, Functions } from '../../themes';
+import LoadingComponent from '../../sections/components/loading';
 
-class Loading extends Component{
+const Loading = ({navigation, dispatch, user, token}) => {
     
-    componentForm = {
-        street_number: 'short_name',
-        route: 'long_name',
-        locality: 'long_name',
-        administrative_area_level_1: 'short_name',
-        country: 'short_name',
-        postal_code: 'short_name'
+    let locationGranted = false;
+    let locationEnabled = false
 
-    };
-
-    constructor(props){
-        super(props);
-        this.state = {
-            localityDetails: [],
-            locationGranted: false,
-            locationEnabled: false,
-        };
-    }
-
-    functionss(){
-        this.checkIfUserIsAlreadyLogged();
-        // this.props.navigation.navigate('HomeAccess');
-        // Geocoder.init(API_KEY); // use a valid API key
+    const functionss = async () =>{
+        console.log("hereee")
+        
+        messaging()
+            .getToken()
+            .then(token => {
+                dispatch({
+                    type: 'SET_UUID',
+                    payload: {
+                        uuid: token
+                    }
+                });
+            });
+        messaging().onTokenRefresh(token => {
+            dispatch({
+                type: 'SET_UUID',
+                payload: {
+                    uuid: token
+                }
+            });
+        });
+        await checkPermission();
+        // await checkIfUserIsAlreadyLogged();
     }
     
-    async checkPermission(){
-        await this.checkLocationPermission()
-        .then((resolve) => this.setState({
-            locationGranted: resolve,
-        }))
+    const checkPermission = async () =>{
+        await checkLocationPermission()
+        .then((resolve) => locationGranted = resolve)
         .catch((error) => BackHandler.exitApp());
     
-        if (this.state.locationGranted === true){
-            await this.checkLocationEnabled()
-            .then((resolve) => this.setState({
-                locationEnabled: true
-            }))
-            .catch((error) => this.setState({
-                locationEnabled: false
-            }));
-            this.loopLocationEnabled();
+        if (locationGranted){
+            await checkLocationEnabled()
+            .then((resolve) => locationEnabled = true)
+            .catch((error) => locationEnabled = false);
+            loopLocationEnabled();
         }
     }
 
-    async checkLocationPermission() {
+    const checkLocationPermission = async () => {
         return new Promise(async(resolve, reject) => {
           try {
             const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
@@ -77,23 +71,21 @@ class Loading extends Component{
         });
     }
 
-    async loopLocationEnabled(){
-        if (this.state.locationEnabled){
-            this.checkIfUserIsAlreadyLogged();
+    const loopLocationEnabled = async () =>{
+        if (locationEnabled){
+            checkIfUserIsAlreadyLogged();
         }
         else {
-            await this.checkLocationEnabled()
+            await checkLocationEnabled()
             .then((resolve) => {
-                this.setState({
-                    locationEnabled: true
-                });
-                this.checkIfUserIsAlreadyLogged();
+                locationEnabled = true;
+                checkIfUserIsAlreadyLogged();
             })
-            .catch((error) => this.loopLocationEnabled());
+            .catch((error) => loopLocationEnabled());
         }
     }
 
-    async checkLocationEnabled(){
+    const checkLocationEnabled = async () => {
         return new Promise(async (resolve, reject)=> {
           if(Platform.OS === 'android'){
             await LocationServicesDialogBox.checkLocationServicesIsEnabled({
@@ -107,7 +99,6 @@ class Loading extends Component{
                 preventBackClick: true , // true => To prevent the location services popup from closing when it is clicked back button
                 providerListener: false // true ==> Trigger locationProviderStatusChange listener when the location state changes
             }).then(function(success) {
-
                 resolve(true);
             }).catch((error) => {
                 reject(new Error(error));
@@ -116,51 +107,58 @@ class Loading extends Component{
         });
     }
 
-    checkIfUserIsAlreadyLogged = () => {
-        if(this.props.user){
-            if(this.props.token){
-                console.log('token si')
-                this.props.navigation.navigate('App');
-            }else{
-                console.log('token no')
-                this.props.navigation.navigate('HomeAccess');
-            }
-        }else{
-            console.log('user no')
-            this.props.navigation.navigate('HomeAccess');
-        }
-    }
-    
-    // add a focus listener onDidMount
-    async componentDidMount () {
-        this.functionss()
-    }
-    
-    // and don't forget to remove the listener
-    UNSAFE_componentWillUnmount () {
-        this.focusListener.remove()
-    }
+    const checkIfUserIsAlreadyLogged = async () => {
+        console.log("checkIfUserIsAlreadyLogged")
+        await Geolocation.getCurrentPosition(
+            async (position)  => {
 
-    render(){
-        return(
-            <SafeAreaView style={[styles.safContainer, { backgroundColor: Colors.primary }]}>
-               <LoadingComponent />
-            </SafeAreaView>
+                await dispatch({
+                    type: 'SET_POSITION',
+                    payload: {
+                        location: position,
+                    }
+                })
+
+                if(user){
+                    if(token){
+                        console.log('token sixxxxxxx')
+                        navigation.navigate('App');
+                    }else{
+                        console.log('token no')
+                        navigation.navigate('HomeAccess');
+                    }
+                }else{
+                    console.log('user no')
+                    navigation.navigate('HomeAccess');
+                }
+                
+            },
+            (error) => {
+                console.log("error", error)
+                if(error.code == 1){
+                    // this.checkPermission();
+                }else{
+                    Alert.alert('Error de GPS', 'No se pudo obtener la ubicación del usuario.\nCódigo de error:' +error.code);
+                    checkIfUserIsAlreadyLogged();
+                }
+            },
+            { enableHighAccuracy: true, maximumAge: 15000, timeout: 10000  }
         )
     }
+    
+    useEffect(() => {
+        console.log("---------------------------------------------")
+        console.log("----------------------///////////////////////-----------------------")
+        functionss();
+        // return () => {
+        // }
+    }, [])
+    
+    return(
+        <LoadingComponent />
+    )
+
 }
-
-
-const styles = StyleSheet.create({
-    safContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    imageBackground: {
-        flex: 1,
-        height: Metrics.screenHeight,
-        width: Metrics.screenWidth,
-        alignContent: 'stretch',
-        resizeMode: 'contain'
-    }
-});
 
 function mapStateToProps(state){
     return {
